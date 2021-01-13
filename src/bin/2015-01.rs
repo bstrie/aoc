@@ -1,10 +1,5 @@
 const INPUT: &str = include_str!("../data/2015-01.txt");
 
-fn main() {
-    part1();
-    part2();
-}
-
 fn part1() {
     let mut floor = 0;
     for c in INPUT.chars() {
@@ -30,4 +25,9 @@ fn part2() {
             break;
         }
     }
+}
+
+fn main() {
+    part1();
+    part2();
 }
