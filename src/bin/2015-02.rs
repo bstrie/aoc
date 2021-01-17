@@ -1,8 +1,12 @@
-const INPUT: &str = include_str!("../data/2015-02.txt");
+fn main() {
+    let input = include_str!("../data/2015-02.txt");
+    println!("area: {}", part1(input));
+    println!("length: {}", part2(input));
+}
 
-fn part1() {
+fn part1(input: &str) -> i32 {
     let mut total_area = 0;
-    for line in INPUT.lines() {
+    for line in input.lines() {
         let d: Vec<i32> = line
             .split('x')
             .map(|n| n.parse().unwrap())
@@ -17,13 +21,12 @@ fn part1() {
         total_area += faces.iter().min().unwrap();
         total_area += 2 * faces.iter().sum::<i32>();
     }
-
-    println!("area: {}", total_area);
+    total_area
 }
 
-fn part2() {
+fn part2(input: &str) -> i32 {
     let mut total_length = 0;
-    for line in INPUT.lines() {
+    for line in input.lines() {
         let d: Vec<i32> = line
             .split('x')
             .map(|n| n.parse().unwrap())
@@ -40,11 +43,21 @@ fn part2() {
         total_length += 2*da + 2*db;
         total_length += d[0] * d[1] * d[2];
     }
-
-    println!("length: {}", total_length);
+    total_length
 }
 
-fn main() {
-    part1();
-    part2();
+#[test]
+fn test1() {
+    aoc::test(part1, &[
+        ("2x3x4", 58),
+        ("1x1x10", 43)
+    ]);
+}
+
+#[test]
+fn test2() {
+    aoc::test(part2, &[
+        ("2x3x4", 34),
+        ("1x1x10", 14)
+    ]);
 }

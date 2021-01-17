@@ -1,36 +1,37 @@
-fn part1() {
-    let key = String::from("ckczppom");
-    let mut num = 1;
-    loop {
-        let data = key.clone() + &num.to_string();
-        let digest = md5::compute(data);
-        let hex = format!("{:x}", digest);
-        if &hex[..5] == "00000" {
-            break;
-        } else {
-            num += 1;
-        }
-    }
-    println!("number: {}", num);
-}
-
-fn part2() {
-    let key = String::from("ckczppom");
-    let mut num = 1;
-    loop {
-        let data = key.clone() + &num.to_string();
-        let digest = md5::compute(data);
-        let hex = format!("{:x}", digest);
-        if &hex[..6] == "000000" {
-            break;
-        } else {
-            num += 1;
-        }
-    }
-    println!("number: {}", num);
-}
-
 fn main() {
-    part1();
-    part2();
+    let input = "ckczppom";
+    println!("number: {}", part1(input));
+    println!("number: {}", part2(input));
+}
+
+fn part1(input: &str) -> i32 {
+    let mut n = 1;
+    loop {
+        let data = format!("{}{}", input, n);
+        let hash = format!("{:x}", md5::compute(data));
+        if &hash[..5] == "00000" {
+            return n;
+        }
+        n += 1;
+    }
+}
+
+fn part2(input: &str) -> i32 {
+    let mut n = 1;
+    loop {
+        let data = format!("{}{}", input, n);
+        let hash = format!("{:x}", md5::compute(data));
+        if &hash[..6] == "000000" {
+            return n;
+        }
+        n += 1;
+    }
+}
+
+#[test]
+fn test1() {
+    aoc::test(part1, &[
+        ("abcdef", 609043),
+        ("pqrstuv", 1048970)
+    ]);
 }
