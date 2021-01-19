@@ -112,13 +112,17 @@ enum Action {
 
 #[test]
 fn test1() {
-    assert_eq!(part1("turn on 0,0 through 999,999"), 1_000_000);
-    assert_eq!(part1("toggle 0,0 through 999,0"), 1_000);
-    assert_eq!(part1("turn off 499,499 through 500,500"), 0);
+    aoc::test(part1, &[
+        ("turn on 0,0 through 999,999", 1_000_000),
+        ("toggle 0,0 through 999,0", 1_000),
+        ("turn off 499,499 through 500,500", 0)
+    ]);
 }
 
 #[test]
 fn test2() {
-    assert_eq!(part2("turn on 0,0 through 0,0"), 1);
-    assert_eq!(part2("toggle 0,0 through 999,999"), 2_000_000);
+    aoc::test(part2, &[
+        ("turn on 0,0 through 0,0", 1),
+        ("toggle 0,0 through 999,999", 2_000_000)
+    ]);
 }
