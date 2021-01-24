@@ -81,14 +81,14 @@ impl<'a> Places<'a> {
 
 #[test]
 fn test1() {
-    aoc::test(part1, &[
+    aoc::test(part1, [
         ("London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141", 605)
     ])
 }
 
 #[test]
 fn test2() {
-    aoc::test(part2, &[
+    aoc::test(part2, [
         ("London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141", 982)
     ])
 }

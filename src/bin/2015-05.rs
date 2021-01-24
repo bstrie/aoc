@@ -53,7 +53,7 @@ fn is_nicer(s: &str) -> bool {
 
 #[test]
 fn test1() {
-    aoc::test(is_nice, &[
+    aoc::test(is_nice, [
         ("ugknbfddgicrmopn", true),
         ("aaa", true),
         ("jchzalrnumimnmhp", false),
@@ -64,7 +64,7 @@ fn test1() {
 
 #[test]
 fn test2() {
-    aoc::test(is_nicer, &[
+    aoc::test(is_nicer, [
         ("qjhvhtzxzqqjkmpb", true),
         ("xxyxx", true),
         ("uurcxstgmygtbstg", false),

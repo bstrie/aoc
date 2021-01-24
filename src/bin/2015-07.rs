@@ -91,7 +91,7 @@ enum Op<'a> {
 
 #[test]
 fn test1() {
-    aoc::test(part1, &[
+    aoc::test(part1, [
         ("123 -> a", 123),
         ("NOT 0 -> a", 65535),
         ("1 AND 1 -> a", 1),

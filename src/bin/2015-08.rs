@@ -43,7 +43,7 @@ fn part2(input: &str) -> usize {
 
 #[test]
 fn test1() {
-    aoc::test(part1, &[
+    aoc::test(part1, [
         (r#""""#, 2),
         (r#""abc""#, 2),
         (r#""aaa\"aaa""#, 3),
@@ -53,7 +53,7 @@ fn test1() {
 
 #[test]
 fn test2() {
-    aoc::test(part2, &[
+    aoc::test(part2, [
         (r#""""#, 4),
         (r#""abc""#, 4),
         (r#""aaa\"aaa""#, 6),

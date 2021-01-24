@@ -1,8 +1,13 @@
-use std::fmt::Debug;
+#![feature(array_value_iter)] // projected to be stable in 1.52
 
-pub fn test<I, O>(f: impl Fn(I)->O, cases: &[(I, O)])
-where I: Copy, O: Copy + Debug + PartialEq<O> {
-    for (i, o) in cases {
-        assert_eq!(f(*i), *o);
+use std::{
+    array::IntoIter,
+    fmt::Debug
+};
+
+pub fn test<I, O, E, const N: usize>(f: impl Fn(I)->O, cases: [(I, E); N])
+where O: Debug + PartialEq<E>, E: Debug {
+    for (input, expected) in IntoIter::new(cases) {
+        assert_eq!(f(input), expected);
     }
 }
