@@ -18,26 +18,26 @@ fn part2(input: &str) -> i32 {
 	places.travel_distance
 }
 
-struct Places {
-	names: Vec<String>,
-	distances: HashMap<(String, String), i32>,
+struct Places<'a> {
+	names: Vec<&'a str>,
+	distances: HashMap<(&'a str, &'a str), i32>,
 	find_least: bool,
 	travel_distance: i32
 }
 
-impl Places {
+impl<'a> Places<'a> {
 	fn new(input: &str, find_least: bool) -> Places {
 		let mut names = HashSet::new();
 		let mut distances = HashMap::new();
 		for line in input.lines() {
-			let parts: Vec<_> = line.split(' ').map(|s| s.to_string()).collect();
-			names.insert(parts[0].clone());
-			names.insert(parts[2].clone());
+			let parts: Vec<_> = line.split(' ').collect();
+			names.insert(parts[0]);
+			names.insert(parts[2]);
 			distances.insert(
 				if parts[0] < parts[2] {
-					(parts[0].clone(), parts[2].clone())
+					(parts[0], parts[2])
 				} else {
-					(parts[2].clone(), parts[0].clone())
+					(parts[2], parts[0])
 				},
 				parts[4].parse().unwrap()
 			);
@@ -54,11 +54,13 @@ impl Places {
 		if j == 1 {
 			let mut total = 0;
 			for pair in self.names.windows(2) {
-				if pair[0] < pair[1] {
-					total += self.distances[&(pair[0].clone(), pair[1].clone())];
-				} else {
-					total += self.distances[&(pair[1].clone(), pair[0].clone())];
-				}
+                total += self.distances[&
+                    if pair[0] < pair[1] {
+					    (pair[0], pair[1])
+                    } else {
+					    (pair[1], pair[0])
+                    }
+                ];
 			}
 			if (total < self.travel_distance) == self.find_least {
 				self.travel_distance = total;
@@ -77,17 +79,18 @@ impl Places {
 	}
 }
 
+use aoc::Test;
 
 #[test]
 fn test1() {
-    aoc::test(part1, &[
+    part1.test(&[
         ("London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141", 605)
-    ]);
+    ])
 }
 
 #[test]
 fn test2() {
-    aoc::test(part2, &[
+    part2.test(&[
         ("London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141", 982)
-    ]);
+    ])
 }

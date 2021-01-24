@@ -1,8 +1,14 @@
 use std::fmt::Debug;
 
-pub fn test<O>(f: fn(&str)->O, input: &[(&str, O)])
-    where O: Debug + PartialEq<O> {
-    for (i, o) in input {
-        assert_eq!(f(i), *o);
+pub trait Test<I, O> {
+    fn test(self, cases: &[(I, O)]);
+}
+
+impl<I, O, F> Test<I, O> for F
+where I: Copy, O: Copy + Debug + PartialEq<O>, F: Fn(I)->O {
+    fn test(self, cases: &[(I, O)]) {
+        for (i, o) in cases {
+            assert_eq!(self(*i), *o);
+        }
     }
 }
