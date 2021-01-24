@@ -41,22 +41,24 @@ fn part2(input: &str) -> usize {
     count
 }
 
+use aoc::Test;
+
 #[test]
 fn test1() {
-    aoc::test(part1, &[
+    part1.test(&[
         (r#""""#, 2),
         (r#""abc""#, 2),
         (r#""aaa\"aaa""#, 3),
         (r#""\x27""#, 5)
-    ]);
+    ])
 }
 
 #[test]
 fn test2() {
-    aoc::test(part2, &[
+    part2.test(&[
         (r#""""#, 4),
         (r#""abc""#, 4),
         (r#""aaa\"aaa""#, 6),
         (r#""\x27""#, 5)
-    ]);
+    ])
 }

@@ -89,9 +89,11 @@ enum Op<'a> {
     RShift(Val<'a>, Val<'a>)
 }
 
+use aoc::Test;
+
 #[test]
 fn test1() {
-    aoc::test(part1, &[
+    part1.test(&[
         ("123 -> a", 123),
         ("NOT 0 -> a", 65535),
         ("1 AND 1 -> a", 1),
@@ -104,5 +106,5 @@ fn test1() {
         ("123 -> x\n456 -> y\nx LSHIFT 2 -> a", 492),
         ("123 -> x\n456 -> y\ny RSHIFT 2 -> a", 114),
         ("123 -> x\n456 -> y\nNOT x -> a", 65412),
-    ]);
+    ])
 }
