@@ -8,32 +8,29 @@ fn main() {
 
 fn part1(input: &str) -> u16 {
     let mut wires = parse(input);
-    calc(&mut wires, String::from("a"))
+    calc(&mut wires, Id("a"))
 }
 
 fn part2(input: &str) -> u16 {
     let mut wires1 = parse(input);
     let mut wires2 = wires1.clone();
-    let a = calc(&mut wires1, String::from("a"));
-    wires2.insert(String::from("b"), Assign(Num(a)));
-    calc(&mut wires2, String::from("a"))
+    let a1 = calc(&mut wires1, Id("a"));
+    wires2.insert("b", Computed(a1));
+    calc(&mut wires2, Id("a"))
 }
 
-fn parse(input: &str) -> HashMap<String, Op> {
+fn parse(input: &str) -> HashMap<&str, Op> {
     let mut wires = HashMap::new();
     for line in input.lines() {
-        let parts: Vec<String> = line
-            .split(' ')
-            .map(|s| s.to_string())
-            .collect();
+        let parts: Vec<_> = line.split(' ').collect();
         let (id, op) = match parts.len() {
-            3 => (parts[2].clone(), Assign(parts[0].clone().into())),
-            4 => (parts[3].clone(), Not(parts[1].clone().into())),
-            5 => (parts[4].clone(), match parts[1].as_str() {
-                "AND" => And(parts[0].clone().into(), parts[2].clone().into()),
-                "OR" => Or(parts[0].clone().into(), parts[2].clone().into()),
-                "LSHIFT" => LShift(parts[0].clone().into(), parts[2].clone().into()),
-                "RSHIFT" => RShift(parts[0].clone().into(), parts[2].clone().into()),
+            3 => (parts[2], Assign(parts[0].into())),
+            4 => (parts[3], Not(parts[1].into())),
+            5 => (parts[4], match parts[1] {
+                "AND" => And(parts[0].into(), parts[2].into()),
+                "OR" => Or(parts[0].into(), parts[2].into()),
+                "LSHIFT" => LShift(parts[0].into(), parts[2].into()),
+                "RSHIFT" => RShift(parts[0].into(), parts[2].into()),
                 _ => unreachable!()
             }),
             _ => unreachable!()
@@ -43,57 +40,35 @@ fn parse(input: &str) -> HashMap<String, Op> {
     wires
 }
 
-fn calc(wires: &mut HashMap<String, Op>, id: String) -> u16 {
-    let op = wires[&id].clone();
-    let num = match op.clone() {
-        Assign(v) => match v {
-            Num(n) => return n, // skip memoization
-            Id(i) => calc(wires, i)
-        }
-        Not(v) => match v {
-            Num(n) => !n,
-            Id(i) => !calc(wires, i)
-        }
-        And(v, w) => match (v, w) {
-            (Num(n), Num(m)) => n & m,
-            (Num(n), Id(i)) |
-            (Id(i), Num(n)) => n & calc(wires, i),
-            (Id(i), Id(j)) => calc(wires, i) & calc(wires, j)
-        }
-        Or(v, w) => match (v, w) {
-            (Num(n), Num(m)) => n | m,
-            (Num(n), Id(i)) |
-            (Id(i), Num(n)) => n | calc(wires, i),
-            (Id(i), Id(j)) => calc(wires, i) | calc(wires, j)
-        }
-        LShift(v, w) => match (v, w) {
-            (Num(n), Num(m)) => n << m,
-            (Num(n), Id(i)) => n << calc(wires, i),
-            (Id(i), Num(n)) => calc(wires, i) << n,
-            (Id(i), Id(j)) => calc(wires, i) << calc(wires, j)
-        }
-        RShift(v, w) => match (v, w) {
-            (Num(n), Num(m)) => n >> m,
-            (Num(n), Id(i)) => n >> calc(wires, i),
-            (Id(i), Num(n)) => calc(wires, i) >> n,
-            (Id(i), Id(j)) => calc(wires, i) >> calc(wires, j)
-        }
+fn calc<'a>(wires: &mut HashMap<&'a str, Op<'a>>, val: Val<'a>) -> u16 {
+    let id = match val {
+        Num(n) => return n, // skip lookup
+        Id(i) => i
     };
-    //println!("memoizing {}={:?} into {}=Assign(Num({}))", id, op, id, num);
-    wires.insert(id, Assign(Num(num)));
+    let op = wires[id];
+    let num = match op {
+        Computed(n) => return n, // skip memoization
+        Assign(v) => calc(wires, v),
+        Not(v) => !calc(wires, v),
+        And(v, w) => calc(wires, v) & calc(wires, w),
+        Or(v, w) => calc(wires, v) | calc(wires, w),
+        LShift(v, w) => calc(wires, v) << calc(wires, w),
+        RShift(v, w) => calc(wires, v) >> calc(wires, w)
+    };
+    //println!("memoizing {}={:?} into {}=Computed({})", id, op, id, num);
+    wires.insert(id, Computed(num));
     num
 }
 
-
 use Val::*;
-#[derive(Clone, Debug)]
-enum Val {
+#[derive(Copy, Clone, Debug)]
+enum Val<'a> {
     Num(u16),
-    Id(String)
+    Id(&'a str)
 }
 
-impl std::convert::From<String> for Val {
-    fn from(val: String) -> Val {
+impl<'a> std::convert::From<&'a str> for Val<'a> {
+    fn from(val: &str) -> Val {
         if val.chars().all(char::is_numeric) {
             Num(val.parse().unwrap())
         } else {
@@ -103,14 +78,15 @@ impl std::convert::From<String> for Val {
 }
 
 use Op::*;
-#[derive(Clone, Debug)]
-enum Op {
-    Assign(Val),
-    Not(Val),
-    And(Val, Val),
-    Or(Val, Val),
-    LShift(Val, Val),
-    RShift(Val, Val)
+#[derive(Copy, Clone, Debug)]
+enum Op<'a> {
+    Computed(u16),
+    Assign(Val<'a>),
+    Not(Val<'a>),
+    And(Val<'a>, Val<'a>),
+    Or(Val<'a>, Val<'a>),
+    LShift(Val<'a>, Val<'a>),
+    RShift(Val<'a>, Val<'a>)
 }
 
 #[test]
