@@ -29,6 +29,7 @@ fn part2(input: &str) -> i32 {
 }
 
 #[test]
+#[ignore]
 fn test1() {
     aoc::test(part1, &[
         ("abcdef", 609043),
