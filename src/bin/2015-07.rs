@@ -89,11 +89,9 @@ enum Op<'a> {
     RShift(Val<'a>, Val<'a>)
 }
 
-use aoc::Test;
-
 #[test]
 fn test1() {
-    part1.test(&[
+    aoc::test(part1, &[
         ("123 -> a", 123),
         ("NOT 0 -> a", 65535),
         ("1 AND 1 -> a", 1),

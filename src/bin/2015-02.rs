@@ -46,11 +46,9 @@ fn part2(input: &str) -> i32 {
     total_length
 }
 
-use aoc::Test;
-
 #[test]
 fn test1() {
-    part1.test(&[
+    aoc::test(part1, &[
         ("2x3x4", 58),
         ("1x1x10", 43)
     ])
@@ -58,7 +56,7 @@ fn test1() {
 
 #[test]
 fn test2() {
-    part2.test(&[
+    aoc::test(part2, &[
         ("2x3x4", 34),
         ("1x1x10", 14)
     ])

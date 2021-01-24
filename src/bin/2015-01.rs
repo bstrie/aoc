@@ -33,11 +33,9 @@ fn part2(input: &str) -> usize {
     position
 }
 
-use aoc::Test;
-
 #[test]
 fn test1() {
-    part1.test(&[
+    aoc::test(part1, &[
         ("(())", 0),
         ("()()", 0),
         ("(((", 3),
@@ -52,7 +50,7 @@ fn test1() {
 
 #[test]
 fn test2() {
-    part2.test(&[
+    aoc::test(part2, &[
         (")", 1),
         ("()())", 5)
     ])

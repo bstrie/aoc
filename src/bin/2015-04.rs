@@ -28,12 +28,10 @@ fn part2(input: &str) -> i32 {
     }
 }
 
-use aoc::Test;
-
 #[test]
 #[ignore]
 fn test1() {
-    part1.test(&[
+    aoc::test(part1, &[
         ("abcdef", 609043),
         ("pqrstuv", 1048970)
     ])

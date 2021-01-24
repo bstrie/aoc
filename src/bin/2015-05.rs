@@ -51,11 +51,9 @@ fn is_nicer(s: &str) -> bool {
     has_double_pair && has_sandwiched
 }
 
-use aoc::Test;
-
 #[test]
 fn test1() {
-    is_nice.test(&[
+    aoc::test(is_nice, &[
         ("ugknbfddgicrmopn", true),
         ("aaa", true),
         ("jchzalrnumimnmhp", false),
@@ -66,7 +64,7 @@ fn test1() {
 
 #[test]
 fn test2() {
-    is_nicer.test(&[
+    aoc::test(is_nicer, &[
         ("qjhvhtzxzqqjkmpb", true),
         ("xxyxx", true),
         ("uurcxstgmygtbstg", false),

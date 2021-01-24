@@ -56,11 +56,9 @@ impl Santa {
     }
 }
 
-use aoc::Test;
-
 #[test]
 fn test1() {
-    part1.test(&[
+    aoc::test(part1, &[
         (">", 2),
         ("^>v<", 4),
         ("^v^v^v^v^v", 2)
@@ -69,7 +67,7 @@ fn test1() {
 
 #[test]
 fn test2() {
-    part2.test(&[
+    aoc::test(part2, &[
         ("^v", 3),
         ("^>v<", 3),
         ("^v^v^v^v^v", 11)
