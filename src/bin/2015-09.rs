@@ -2,8 +2,8 @@ use std::collections::{HashMap, HashSet};
 
 fn main() {
     let input = include_str!("../data/2015-09.txt");
-    println!("distance: {}", part1(input));
-    println!("distance: {}", part2(input));
+    println!("Part 1: {}", part1(input));
+    println!("Part 2: {}", part2(input));
 }
 
 fn part1(input: &str) -> i32 {

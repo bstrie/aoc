@@ -1,7 +1,7 @@
 fn main() {
     let input = "1113122113";
-    println!("length: {}", part1(input));
-    println!("length: {}", part2(input));
+    println!("Part 1: {}", part1(input));
+    println!("Part 2: {}", part2(input));
 }
 
 fn part1(input: &str) -> usize {

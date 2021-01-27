@@ -2,8 +2,8 @@ use std::collections::HashSet;
 
 fn main() {
     let input = include_str!("../data/2015-03.txt");
-    println!("houses: {}", part1(input));
-    println!("houses: {}", part2(input));
+    println!("Part 1: {}", part1(input));
+    println!("Part 2: {}", part2(input));
 }
 
 fn part1(input: &str) -> usize {
