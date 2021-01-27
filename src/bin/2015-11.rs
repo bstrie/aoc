@@ -39,17 +39,8 @@ fn has_straight(buf: &[u8]) -> bool {
 }
 
 fn has_pairs(buf: &[u8]) -> bool {
-    let mut one_pair = false;
-    let mut win = buf.array_windows();
-    while let Some(&[c1, c2]) = win.next() {
-        if c1 == c2 {
-            if !one_pair {
-                one_pair = true;
-                win.next();
-            } else {
-                return true;
-            }
-        }
+    if let Some(i) = buf.array_windows().position(|&[c1, c2]| c1==c2) {
+        return buf[i+2..].array_windows().any(|&[c1, c2]| c1==c2);
     }
     false
 }
