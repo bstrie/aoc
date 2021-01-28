@@ -1,4 +1,9 @@
-use std::collections::{HashMap, HashSet};
+#![feature(array_windows)]
+
+use std::{
+    cmp::{max, min},
+    collections::{HashMap, HashSet}
+};
 
 fn main() {
     let input = include_str!("../data/2015-09.txt");
@@ -7,26 +12,23 @@ fn main() {
 }
 
 fn part1(input: &str) -> i32 {
-	let mut places = Places::new(input, true);
-	places.permute(places.names.len());
-	places.travel_distance
+	let mut places = Places::new(input, min);
+	places.permute(i32::MAX, places.names.len())
 }
 
 fn part2(input: &str) -> i32 {
-	let mut places = Places::new(input, false);
-	places.permute(places.names.len());
-	places.travel_distance
+	let mut places = Places::new(input, max);
+	places.permute(0, places.names.len())
 }
 
-struct Places<'a> {
+struct Places<'a, F> {
 	names: Vec<&'a str>,
 	distances: HashMap<(&'a str, &'a str), i32>,
-	find_least: bool,
-	travel_distance: i32
+    compare: F
 }
 
-impl<'a> Places<'a> {
-	fn new(input: &str, find_least: bool) -> Places {
+impl<'a, F: Fn(i32,i32)->i32> Places<'a, F> {
+	fn new(input: &str, compare: F) -> Places<F> {
 		let mut names = HashSet::new();
 		let mut distances = HashMap::new();
 		for line in input.lines() {
@@ -45,50 +47,54 @@ impl<'a> Places<'a> {
 		Places {
 			names: names.into_iter().collect(),
 			distances,
-			find_least,
-			travel_distance: if find_least { i32::MAX } else { 0 }
+			compare
 		}
 	}
 
-	fn permute(&mut self, j: usize) {
+	fn permute(&mut self, mut dist: i32, j: usize) -> i32 {
 		if j == 1 {
 			let mut total = 0;
-			for pair in self.names.windows(2) {
+			for &[p1, p2] in self.names.array_windows() {
                 total += self.distances[&
-                    if pair[0] < pair[1] {
-					    (pair[0], pair[1])
+                    if p1 < p2 {
+					    (p1, p2)
                     } else {
-					    (pair[1], pair[0])
+					    (p2, p1)
                     }
                 ];
 			}
-			if (total < self.travel_distance) == self.find_least {
-				self.travel_distance = total;
-			}
-			return;
+			return total;
 		}
 
 		for i in 0..j {
-			self.permute(j-1);
+            let newdist = self.permute(dist, j-1);
+			dist = (self.compare)(dist, newdist);
+
 			if j % 2 == 0 {
 				self.names.swap(i, j-1);
 			} else {
 				self.names.swap(0, j-1);
 			}
 		}
+
+        dist
 	}
 }
 
 #[test]
 fn test1() {
-    aoc::test(part1, [
-        ("London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141", 605)
-    ])
+    let input = "\
+London to Dublin = 464
+London to Belfast = 518
+Dublin to Belfast = 141";
+    assert_eq!(part1(input), 605);
 }
 
 #[test]
 fn test2() {
-    aoc::test(part2, [
-        ("London to Dublin = 464\nLondon to Belfast = 518\nDublin to Belfast = 141", 982)
-    ])
+    let input = "\
+London to Dublin = 464
+London to Belfast = 518
+Dublin to Belfast = 141";
+    assert_eq!(part2(input), 982);
 }
