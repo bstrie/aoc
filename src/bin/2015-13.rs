@@ -29,7 +29,7 @@ impl<'a> People<'a> {
 		for line in input.lines() {
 			let parts: Vec<_> = line.split(' ').collect();
             let p1 = parts[0];
-            let p2 = parts[10].strip_suffix(".").unwrap();
+            let p2 = parts[10].trim_end_matches('.');
             let magnitude: i32 = parts[3].parse().unwrap();
 			names.insert(p1);
 			names.insert(p2);
