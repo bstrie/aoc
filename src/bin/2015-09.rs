@@ -23,7 +23,7 @@ fn part2(input: &str) -> i32 {
 
 struct Places<'a, F> {
     names: Vec<&'a str>,
-    distances: HashMap<(&'a str, &'a str), i32>,
+    distances: HashMap<[&'a str; 2], i32>,
     compare: F,
 }
 
@@ -31,33 +31,21 @@ impl<'a, F: Fn(i32, i32) -> i32> Places<'a, F> {
     fn new(input: &str, compare: F) -> Places<F> {
         let mut names = HashSet::new();
         let mut distances = HashMap::new();
+
         for line in input.lines() {
             let parts: Vec<_> = line.split(' ').collect();
             names.insert(parts[0]);
             names.insert(parts[2]);
-            distances.insert(
-                if parts[0] < parts[2] {
-                    (parts[0], parts[2])
-                } else {
-                    (parts[2], parts[0])
-                },
-                parts[4].parse().unwrap(),
-            );
+            distances.insert([parts[0], parts[2]], parts[4].parse().unwrap());
+            distances.insert([parts[2], parts[0]], parts[4].parse().unwrap());
         }
-        Places {
-            names: names.into_iter().collect(),
-            distances,
-            compare,
-        }
+
+        Places { names: names.into_iter().collect(), distances, compare }
     }
 
     fn permute(&mut self, mut dist: i32, j: usize) -> i32 {
         if j == 1 {
-            let mut total = 0;
-            for &[p1, p2] in self.names.array_windows() {
-                total += self.distances[&if p1 < p2 { (p1, p2) } else { (p2, p1) }];
-            }
-            return total;
+            return self.names.array_windows().fold(0, |acc, n| acc + self.distances[n])
         }
 
         for i in 0..j {
