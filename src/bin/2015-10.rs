@@ -7,7 +7,7 @@ fn main() {
 fn part1(input: &str) -> usize {
     let mut result = input.to_string();
     for _ in 0..40 {
-        result = look_and_say(result);
+        result = look_and_say(&result);
     }
     result.len()
 }
@@ -15,13 +15,13 @@ fn part1(input: &str) -> usize {
 fn part2(input: &str) -> usize {
     let mut result = input.to_string();
     for _ in 0..50 {
-        result = look_and_say(result);
+        result = look_and_say(&result);
     }
     result.len()
 }
 
-fn look_and_say(input: impl AsRef<str>) -> String {
-    let mut chars = input.as_ref().chars().peekable();
+fn look_and_say(input: &str) -> String {
+    let mut chars = input.chars().peekable();
     let mut result = String::new();
     let mut run = 1;
     while let Some(c1) = chars.next() {
